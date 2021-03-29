@@ -1,7 +1,5 @@
-from typing import Iterable
-import numpy.random as random
-
 import BTS
+import logging
 
 
 class Network:
@@ -12,4 +10,4 @@ class Network:
 
 	def __init__(self):
 		self.bts: BTS = BTS.BTS(k_=self.k, s_=self.s, epsilon_=self.epsilon)
-		print('started')
+		logging.getLogger(__name__).info(msg='Created Network')
