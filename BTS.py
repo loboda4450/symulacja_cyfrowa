@@ -43,7 +43,7 @@ class BTS:
 		logging.getLogger(__name__).info(msg=f'Updated time t = {self.t}')
 
 	def t_expire(self):
-		logging.getLogger(__name__).info(msg='time t expired, adding new user and generating new time t')
+		logging.getLogger(__name__).info(msg='Time t expired, adding new user and generating new time t')
 		self.add_user(l=Network.Network.l) if len(self.user_list) * Network.Network.l < self.k else self.add_user(l=0)
 		self.t_update()
 
@@ -56,7 +56,7 @@ class BTS:
 				pass
 
 	def tau_expire(self):
-		logging.getLogger(__name__).info(msg='Tau expired, updating ResourceBlocks')
+		logging.getLogger(__name__).info(msg='Time tau expired, updating ResourceBlocks')
 		for rb in self.rb_list:
 			rb.update_throughput()
 

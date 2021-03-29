@@ -27,7 +27,7 @@ class User:
 
 	def d_update(self):
 		self.d = random.randint(low=1, high=10) * 250
-		logging.getLogger(__name__).info(msg="Updating user's d")
+		logging.getLogger(__name__).info(msg="Updating data to receive by user")
 
 	def get_user_throughput(self) -> int:
 		logging.getLogger(__name__).info(msg="Getting user's throughput")
