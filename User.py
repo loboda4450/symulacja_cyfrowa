@@ -1,34 +1,44 @@
 import logging
+from typing import List
+from ResourceBlock import ResourceBlock
+from Packet import Packet
 
 import numpy.random as random
-from typing import List
-
-import ResourceBlock
 
 
 class User:
-	def __init__(self, resource_blocks: list) -> None:
-		self.rb_list: List[ResourceBlock] = resource_blocks  # ilość przydzielonych bloków zasobów
-		self.d: int = random.randint(low=1, high=10) * 250  # ilość odbieranych danych przez użytkownika
+	def __init__(self, _log: bool):
+		self.d: int = random.randint(low=1, high=10) * 250  # [b] losowa (rozkład jednostajny) liczba odbieranych danych przez użytkownika
+		self.user_rb_list: List[ResourceBlock] = list()  # lista przydzielonych bloków zasobów użytkownikowi
+		self.packet_list: List[Packet] = list()  # lista pakietów przypisanych do użytkownika
+		self.prev_d: List[ResourceBlock] = list()  # lista poprzednio przydzielonych bloków zasobów (używana do obliczania sum_d)
+		self.sum_d: int = 0  # nie ma sensu z tego wyciągać średniej, jeżeli numa >= numb, to numa/5 >= numb/5
+		self.log: bool = _log
 
-	def __delete__(self, instance):
-		for rb in self.rb_list:
-			del rb
+		if self.log:
+			logging.getLogger(__name__).info(msg=f'Created user: {self.d, self.user_rb_list, self.sum_d}')
 
-		del self.rb_list
-		del self.d
-		logging.getLogger(__name__).info(msg='Removed BTS user')
+	def update_d(self) -> int:
+		return self.d
 
-	def rb_list_update(self):
-		for rb in self.rb_list:
-			rb.update_throughput()
+	def append_to_rb_list(self, element: ResourceBlock):
+		self.user_rb_list.append(element)
+		if self.log:
+			logging.getLogger(__name__).info(msg=f"Appended ResourceBlock to user's rb_list")
 
-		logging.getLogger(__name__).info(msg="Updating user's ResourceBlocks")
+	def update_rb_list(self, swap: List[ResourceBlock]) -> List[ResourceBlock]:
+		self.user_rb_list = swap
+		if self.log:
+			logging.getLogger(__name__).info(msg=f"'Updated ResourceBlock to user's rb_list'")
+		return self.user_rb_list
 
-	def d_update(self):
-		self.d = random.randint(low=1, high=10) * 250
-		logging.getLogger(__name__).info(msg="Updating data to receive by user")
+	def update_prev_d(self) -> List[ResourceBlock]:
+		self.prev_d = self.prev_d[1:]
+		# if self.log:
+		# 	logging.getLogger(__name__).info(msg=f"Updated user's previously received data.")
+		return self.prev_d
 
-	def get_user_throughput(self) -> int:
-		logging.getLogger(__name__).info(msg="Getting user's throughput")
-		return sum([rb.get_throughput() for rb in self.rb_list])
+	def update_sum_d(self) -> int:
+		# if self.log:
+		# 	logging.getLogger(__name__).info(msg=f"Updated user's d-sum.")
+		return self.sum_d
