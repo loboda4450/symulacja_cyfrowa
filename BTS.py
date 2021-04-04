@@ -6,9 +6,8 @@ from User import User
 
 
 class BTS:
-	def __init__(self, k_: int, s_: int, epsilon_: float, clock_: int, _log: bool):
-		self.log: bool = _log
-
+	def __init__(self, k_: int, s_: int, epsilon_: float, clock_: int, _log: logging):
+		self.log: logging = _log.getChild(__name__)
 		self.user_list: List[User] = [User(_log=self.log) for _ in range(10)]
 		self.k: int = k_  # ilość Resource Blocks
 		self.rb_list: List[ResourceBlock] = [ResourceBlock(_log=self.log) for _ in range(self.k)]
@@ -19,8 +18,7 @@ class BTS:
 		self.clock: int = clock_  # zegar BTSa
 		self.cycles_done: int = 0  # wykonane cykle zegarowe przez BTS.
 
-		if self.log:
-			logging.getLogger(__name__).info(msg='Created Base Transmitting Station')
+		self.log.info(msg='Created Base Transmitting Station')
 
 	def add_user(self):
 		self.user_list.append(User(_log=self.log))
