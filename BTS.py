@@ -9,7 +9,7 @@ class BTS:
 	def __init__(self, k_: int, s_: int, epsilon_: float, clock_: int, _log: bool):
 		self.log: bool = _log
 
-		self.user_list: List[User] = list()
+		self.user_list: List[User] = [User(_log=self.log) for _ in range(10)]
 		self.k: int = k_  # ilość Resource Blocks
 		self.rb_list: List[ResourceBlock] = [ResourceBlock(_log=self.log) for _ in range(self.k)]
 		self.s: int = s_  # czas co ile przydzielane są bloki zasobów RB

@@ -21,7 +21,7 @@ class ResourceBlock:
 		if self.log:
 			logging.getLogger(__name__).info(msg=f"Updating ResourceBlock's throughput to {self.throughput}")
 
-		self.throughput = random.randint(low=20000, high=800000)  # przepływność użytkownika
+		self.throughput = random.randint(low=20, high=800)  # przepływność użytkownika
 
 	def get_throughput(self) -> int:
 		if self.log:
