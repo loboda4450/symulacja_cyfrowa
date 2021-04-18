@@ -33,7 +33,7 @@ class User:
 		self.user_rb_list.append(element)
 		self.log.log(msg=f"Appended ResourceBlock to user's rb_list", level=2)
 
-	def update_rb_list(self) -> List[ResourceBlock]:
+	def update_user_existing_rbs(self) -> List[ResourceBlock]:
 
 		self.log.log(msg=f"Updated ResourceBlock to user's rb_list", level=2)
 		return self.user_rb_list

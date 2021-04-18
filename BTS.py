@@ -72,9 +72,9 @@ class BTS:
 
 	# self.log.log(msg='Removed user!', level=1)
 
-	def update_users_throughput(self):
+	def update_users_throughput(self):  # Update throughput of existing ResourceBlocks
 		for user in self.user_list:
-			user.update_rb_list()
+			user.update_user_existing_rbs()
 
-	def redistribute_resource_blocks(self):
+	def redistribute_resource_blocks(self):  # Algorithm defined by A in excercise
 		pass
