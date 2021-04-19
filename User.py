@@ -15,7 +15,7 @@ class User:
 		self.prev_sum_d: int = 0  # średnia przepływność z poprzednich 5 ms.
 		self.sum_d: int = 0  # nie ma sensu z tego wyciągać średniej, jeżeli numa >= numb, to numa/5 >= numb/5
 
-		# self.log.log(msg=f'Created user: {self.d, self.user_rb_list, self.sum_d}', level=2)
+	# self.log.log(msg=f'Created user: {self.d, self.user_rb_list, self.sum_d}', level=2)
 
 	def send_packet(self) -> None:
 		for rb in self.user_rb_list:
@@ -23,8 +23,7 @@ class User:
 				self.d -= rb.throughput
 			else:
 				rb.update_is_sent()
-		else:
-			pass
+
 
 	def update_d(self) -> int:
 		return self.d

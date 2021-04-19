@@ -34,25 +34,21 @@ class BTS:
 		for user in self.user_list:
 			if user.d > 0:
 				user.send_packet()
-				print('packet sent')
-			else:
-				self.remove_user(user)
-				print('user removed')
-		else:
-			pass
+				if user.d <= 0:
+					self.remove_user(user)
 
 		if not self.cycles_done % self.t:
 			self.add_user()
 			print(len(self.user_list))
 			self.log.log(msg='Added user', level=1)
 
-		# if not self.cycles_done % self.tau:
-		# 	self.update_users_throughput()
-		# 	self.log.log(msg='Updated users propagation conditions', level=1)
-		#
-		# if not self.cycles_done % self.s:
-		# 	self.redistribute_resource_blocks()
-		# 	self.log.log(msg='Updated users throughput and resource blocks', level=1)
+		if not self.cycles_done % self.tau:
+			self.update_users_throughput()
+			self.log.log(msg='Updated users propagation conditions', level=1)
+
+		if not self.cycles_done % self.s:
+			self.redistribute_resource_blocks()
+			self.log.log(msg='Updated users throughput and resource blocks', level=1)
 
 		self.cycles_done += self.clock
 
@@ -76,5 +72,5 @@ class BTS:
 		for user in self.user_list:
 			user.update_user_existing_rbs()
 
-	def redistribute_resource_blocks(self):  # Algorithm defined by A in excercise
+	def redistribute_resource_blocks(self):  # Algorithm defined by A in exercise
 		pass
