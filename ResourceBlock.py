@@ -22,10 +22,8 @@ class ResourceBlock:
 
 	def update_throughput(self):
 		self.log.log(msg=f"Updating ResourceBlock's throughput to {self.throughput}", level=3)
-
 		self.throughput = randint(low=20, high=800)  # przepływność użytkownika
 
 	def get_throughput(self) -> int:
 		self.log.log(msg=f"Getting ResourceBlock's throughput = {self.throughput}", level=3)
-
 		return self.throughput
