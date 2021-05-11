@@ -17,10 +17,11 @@ class Network:
 
 		self.bts.run(step_by_step=_step_by_step)
 
+
 	def get_stats(self):
 		stop = datetime.now()
-		return f'simulation start: {self.exec_start}\n' \
-		       f'simulation end: {stop}\n' \
+		return f'simulation start: {self.exec_start.strftime("%b %d %Y %H:%M:%S")}\n' \
+		       f'simulation end: {stop.strftime("%b %d %Y %H:%M:%S")}\n' \
 		       f'simulation time: {stop - self.exec_start}\n' \
 		       f'users: {self.bts.new_users}\n' \
 		       f'users served: {self.bts.served_users}'
