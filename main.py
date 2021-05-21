@@ -1,11 +1,13 @@
 import logging
 import Network
-
+from RNG import RNG
 
 def main():
 	# logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=1)
-	network = Network.Network(_epsilon=0.1, _k=15, _s=1, _l=3, _step_by_step=False, _simulation_time=10)  # _step_by_step określa, czy pracujemy krokowo, czy nie
-	print(network.get_stats())
+	# network = Network.Network(_epsilon=0.1, _k=15, _s=1, _l=3, _step_by_step=False, _simulation_time=10)  # _step_by_step określa, czy pracujemy krokowo, czy nie
+	# print(network.get_stats())
+	r = RNG()
+	print("XD")
 
 
 if __name__ == '__main__':
