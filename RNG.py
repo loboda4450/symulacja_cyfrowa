@@ -3,7 +3,7 @@ from os import urandom
 
 
 class RNG:
-    def __init__(self, init_seed=int.from_bytes(urandom(6), 'little'), _m=2147483647, _a=16807, _q=127773, _r=2836):
+    def __init__(self, init_seed=int.from_bytes(urandom(2), 'little'), _m=2147483647, _a=16807, _q=127773, _r=2836):
         self.seed: int = init_seed
         self.m: int = _m
         self.a: int = _a
@@ -12,11 +12,11 @@ class RNG:
 
     def uniform(self):
         h = floor(self.seed / self.q)
-        self.seed = self.a * (self.seed - self.q * h) - self.r * h
-        while self.seed < 0:
-            self.seed = self.seed + self.m
+        val = self.a * (self.seed - self.q * h) - self.r * h
+        if val < 0:
+            val = val + self.m
 
-        return self.seed
+        return val
 
     def exponential(self, l: int):
         return -(1.0 / l) * log(self.uniform())

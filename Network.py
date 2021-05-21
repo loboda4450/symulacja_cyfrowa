@@ -1,4 +1,5 @@
 from datetime import datetime
+from statistics import mean
 
 import BTS
 import logging
@@ -24,4 +25,7 @@ class Network:
 		       f'simulation end: {stop.strftime("%b %d %Y %H:%M:%S")}\n' \
 		       f'simulation time: {stop - self.exec_start}\n' \
 		       f'users: {self.bts.new_users}\n' \
-		       f'users served: {self.bts.served_users}'
+		       f'users served: {self.bts.served_users}\n' \
+			   f'cycles done: {self.bts.cycles_done}\n' \
+			   f'user appearance times: {self.bts.t1, self.bts.t2, self.bts.t3, self.bts.t4, self.bts.t5, self.bts.t6, self.bts.t7, self.bts.t8}\n' \
+			   f'mean user wait time: {round(mean(self.bts.avg_waittime), 3)}'
