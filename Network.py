@@ -33,4 +33,5 @@ class Network:
                 'user appearance times': f'{self.bts.t1, self.bts.t2}',
                 'user resource blocks propagation properties update': self.bts.tau,
                 'mean user wait time': f'{round(mean(self.bts.avg_waittime), 3)}ms',
-                'transmission error rate': f'{round(self.bts.error_trasmission / (self.bts.error_trasmission + self.bts.correct_transmission), 4) *100}%'}
+                'transmission error rate': f'{round(self.bts.error_trasmission / (self.bts.error_trasmission + self.bts.correct_transmission), 4) *100}%',
+                'initial phase cycles': self.bts.initial_phase_cycles}

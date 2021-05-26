@@ -29,7 +29,8 @@ class BTS:
         self.k_max: int = 3  # ilość ResourceBlocków do przydzielenie maksymalnie
         self.s: int = s_  # czas co ile przydzielane są bloki zasobów RB
         self.epsilon: float = epsilon_  # prawdopodobienstwo, że transmisja się nie uda
-        self.tau: float = generate_fucking_random_bigger_than_fucking_0_ffs(10)  # odstęp czasowy między zmianą warunków propagacji dla każdego usera
+        self.tau: float = generate_fucking_random_bigger_than_fucking_0_ffs(
+            10)  # odstęp czasowy między zmianą warunków propagacji dla każdego usera
         self.t1: int = 5  # generate_fucking_random_bigger_than_fucking_0_ffs(40)  # czas co ile pojawiają się nowi userzy
         self.t2: int = 32  # generate_fucking_random_bigger_than_fucking_0_ffs(40)  # czas co ile pojawiają się nowi userzy
         self.clock: int = clock_  # zegar BTSa (1 cykl = 1ms)
@@ -42,6 +43,8 @@ class BTS:
         self.avg_waittime: List[int] = list()
         self.correct_transmission = 0
         self.error_trasmission = 0
+        self.initial_phase: bool = False
+        self.initial_phase_cycles: int = None
 
         self.log.log(msg='Created Base Transmitting Station', level=1)
 
@@ -85,7 +88,7 @@ class BTS:
                 user.update_prev_sum_d()
 
                 if user.d <= 0:
-                    self.avg_waittime.append(user.waittime)
+                    if self.initial_phase: self.avg_waittime.append(user.waittime)
                     self.remove_user(user)
 
             user.update_user_waittime()
@@ -109,12 +112,18 @@ class BTS:
         for user in self.user_list:
             user.update_user_existing_rbs()
 
-    def redistribute_resource_blocks(self) -> None:  # Algorithm defined by A in exercise, work in progress, tmp solution
+    def redistribute_resource_blocks(self) -> None:
         for user in self.user_list:
             user.clear_resource_blocks()
 
         for i in range(len(self.user_list) * self.k_max if len(self.user_list) < self.k / self.k_max else self.k):
-            value, user_index = max(((divide(user.get_current_throughput(), user.get_avg_throughput()), user_index) for user_index, user in enumerate(self.user_list) if not user.has_all_resource_blocks()), key=lambda x: x[0])
+            value, user_index = max(
+                ((divide(user.get_current_throughput(), user.get_avg_throughput()), user_index) for user_index, user in
+                 enumerate(self.user_list) if not user.has_all_resource_blocks()), key=lambda x: x[0])
             picked = self.user_list[user_index]
 
             picked.add_resource_block(ResourceBlock(_log=self.log, _epsilon=self.epsilon))
+
+            if i == self.k - 1 and not self.initial_phase:
+                self.initial_phase = True
+                self.initial_phase_cycles = self.cycles_done
