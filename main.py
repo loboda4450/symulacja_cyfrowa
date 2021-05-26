@@ -1,6 +1,5 @@
 import logging
 import Network
-from RNG import RNG
 from multiprocessing import Pool, cpu_count
 
 
@@ -16,7 +15,11 @@ def main():
     #                           _simulation_time=1)  # _step_by_step określa, czy pracujemy krokowo, czy nie
     # print(network.get_stats())
 
-    arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 40, 60, 80, 100, 200, 300, 400, 1000, 2000]
+    # arr = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+    # arr = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+    # arr = [1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500]
+    # ~15ms waittime Pan tak powiedział XD
 
     pool = Pool(cpu_count())
     res = pool.map(get_work, arr)

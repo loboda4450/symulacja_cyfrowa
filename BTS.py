@@ -29,16 +29,9 @@ class BTS:
         self.k_max: int = 3  # ilość ResourceBlocków do przydzielenie maksymalnie
         self.s: int = s_  # czas co ile przydzielane są bloki zasobów RB
         self.epsilon: float = epsilon_  # prawdopodobienstwo, że transmisja się nie uda
-        self.tau: float = 10  # random.exponential(scale=1 / 10)  # odstęp czasowy między zmianą warunków propagacji dla każdego usera
-        # self.t1: float = 1  # czas co ile pojawiają się nowi userzy
-        self.t1: int = generate_fucking_random_bigger_than_fucking_0_ffs(7)  # czas co ile pojawiają się nowi userzy
-        self.t2: int = generate_fucking_random_bigger_than_fucking_0_ffs(7)  # czas co ile pojawiają się nowi userzy
-        self.t3: int = generate_fucking_random_bigger_than_fucking_0_ffs(7)  # czas co ile pojawiają się nowi userzy
-        self.t4: int = generate_fucking_random_bigger_than_fucking_0_ffs(7)  # czas co ile pojawiają się nowi userzy
-        self.t5: int = generate_fucking_random_bigger_than_fucking_0_ffs(7)  # czas co ile pojawiają się nowi userzy
-        self.t6: int = generate_fucking_random_bigger_than_fucking_0_ffs(7)  # czas co ile pojawiają się nowi userzy
-        self.t7: int = generate_fucking_random_bigger_than_fucking_0_ffs(7)  # czas co ile pojawiają się nowi userzy
-        self.t8: int = generate_fucking_random_bigger_than_fucking_0_ffs(7)  # czas co ile pojawiają się nowi userzy
+        self.tau: float = generate_fucking_random_bigger_than_fucking_0_ffs(10)  # odstęp czasowy między zmianą warunków propagacji dla każdego usera
+        self.t1: int = 5  # generate_fucking_random_bigger_than_fucking_0_ffs(40)  # czas co ile pojawiają się nowi userzy
+        self.t2: int = 32  # generate_fucking_random_bigger_than_fucking_0_ffs(40)  # czas co ile pojawiają się nowi userzy
         self.clock: int = clock_  # zegar BTSa (1 cykl = 1ms)
         self.cycles_done: int = 0  # wykonane cykle zegarowe przez BTS.
         self.taken_rb_count: int = 0  # ilość zajętych ResourceBlocków
@@ -47,6 +40,8 @@ class BTS:
         self.new_users: int = 0
         self.simulation_time: int = simulation_time_ * 1000
         self.avg_waittime: List[int] = list()
+        self.correct_transmission = 0
+        self.error_trasmission = 0
 
         self.log.log(msg='Created Base Transmitting Station', level=1)
 
@@ -67,30 +62,6 @@ class BTS:
             self.add_user()
             self.log.log(msg='Added user with t2', level=1)
 
-        if not self.cycles_done % self.t3:
-            self.add_user()
-            self.log.log(msg='Added user with t3', level=1)
-
-        if not self.cycles_done % self.t4:
-            self.add_user()
-            self.log.log(msg='Added user with t4', level=1)
-
-        if not self.cycles_done % self.t5:
-            self.add_user()
-            self.log.log(msg='Added user with t5', level=1)
-
-        if not self.cycles_done % self.t6:
-            self.add_user()
-            self.log.log(msg='Added user with t6', level=1)
-
-        if not self.cycles_done % self.t7:
-            self.add_user()
-            self.log.log(msg='Added user with t7', level=1)
-        #
-        # if not self.cycles_done % self.t8:
-        #     self.add_user()
-        #     self.log.log(msg='Added user with t8', level=1)
-
         if not self.cycles_done % self.tau:
             self.update_users_throughput()
             self.log.log(msg='Updated users propagation conditions', level=1)
@@ -104,9 +75,11 @@ class BTS:
                 for rb in user.user_rb_list:
                     if rb.is_sent:
                         user.d -= rb.throughput
+                        self.correct_transmission += 1
                         self.log.log(msg='Sent packet!', level=1)
                     else:
                         rb.update_is_sent()
+                        self.error_trasmission += 1
                         self.log.log(msg='Packet updated!', level=2)
 
                 user.update_prev_sum_d()
@@ -123,14 +96,14 @@ class BTS:
         self.user_list.append(User(_log=self.log, _rb=list()))
         self.new_users += 1
 
-    # self.log.log(msg='Added user to BTS!', level=1)
+        self.log.log(msg='Added user to BTS!', level=1)
 
     def remove_user(self, user: User):
         self.taken_rb_count -= len(user.user_rb_list)
         self.user_list.remove(user)
         self.served_users += 1
 
-    # self.log.log(msg='Removed user!', level=1)
+        self.log.log(msg='Removed user!', level=1)
 
     def update_users_throughput(self):  # Update throughput of existing ResourceBlocks
         for user in self.user_list:
@@ -141,9 +114,7 @@ class BTS:
             user.clear_resource_blocks()
 
         for i in range(len(self.user_list) * self.k_max if len(self.user_list) < self.k / self.k_max else self.k):
-            value, user_index = max(
-                ((divide(user.get_current_throughput(), user.get_avg_throughput()), user_index) for user_index, user in
-                 enumerate(self.user_list) if not user.has_all_resource_blocks()), key=lambda x: x[0])
+            value, user_index = max(((divide(user.get_current_throughput(), user.get_avg_throughput()), user_index) for user_index, user in enumerate(self.user_list) if not user.has_all_resource_blocks()), key=lambda x: x[0])
             picked = self.user_list[user_index]
 
             picked.add_resource_block(ResourceBlock(_log=self.log, _epsilon=self.epsilon))
