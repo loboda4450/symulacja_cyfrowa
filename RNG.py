@@ -20,13 +20,10 @@ class RNG:
         return self.seed / self.m
 
     def exponential(self, l: int) -> float:
-        self.seed = int.from_bytes(urandom(4), 'little')  # initialize with new seed value
         return -(1.0 / l) * log(self.uniform())
 
     def binary(self, p=0.5) -> bool:
-        self.seed = int.from_bytes(urandom(4), 'little')  # initialize with new seed value
         return self.uniform() > p
 
     def range(self, start: int, stop: int) -> float:
-        self.seed = int.from_bytes(urandom(4), 'little')  # initialize with new seed value
         return self.uniform() * (stop - start) + start

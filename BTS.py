@@ -14,7 +14,7 @@ def divide(a, b):
         return a / b
 
 
-def generate_fucking_random_bigger_than_fucking_0_ffs(l) -> int:
+def generate_fucking_random_bigger_than_fucking_0_ffs(l: int) -> int:
     tmp = round(random.exponential(l))
     while tmp == 0:
         tmp = round(random.exponential(l))
@@ -92,24 +92,24 @@ class BTS:
 
         self.cycles_done += self.clock
 
-    def add_user(self):
+    def add_user(self) -> None:
         self.user_list.append(User(_log=self.log, _rb=list()))
         self.new_users += 1
 
         self.log.log(msg='Added user to BTS!', level=1)
 
-    def remove_user(self, user: User):
+    def remove_user(self, user: User) -> None:
         self.taken_rb_count -= len(user.user_rb_list)
         self.user_list.remove(user)
         self.served_users += 1
 
         self.log.log(msg='Removed user!', level=1)
 
-    def update_users_throughput(self):  # Update throughput of existing ResourceBlocks
+    def update_users_throughput(self) -> None:  # Update throughput of existing ResourceBlocks
         for user in self.user_list:
             user.update_user_existing_rbs()
 
-    def redistribute_resource_blocks(self):  # Algorithm defined by A in exercise, work in progress, tmp solution
+    def redistribute_resource_blocks(self) -> None:  # Algorithm defined by A in exercise, work in progress, tmp solution
         for user in self.user_list:
             user.clear_resource_blocks()
 

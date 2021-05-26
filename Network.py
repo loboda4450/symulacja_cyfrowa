@@ -20,17 +20,17 @@ class Network:
 
         self.bts.run(step_by_step=_step_by_step)
 
-    def get_stats(self):
+    def get_stats(self) -> dict:
         stop = datetime.now()
-        return f'simulation start: {self.exec_start.strftime("%b %d %Y %H:%M:%S")}\n' \
-               f'simulation end: {stop.strftime("%b %d %Y %H:%M:%S")}\n' \
-               f'simulation time: {stop - self.exec_start}\n' \
-               f'simulated time of: {self.simulation_time}s\n' \
-               f'users: {self.bts.new_users}\n' \
-               f'users served: {self.bts.served_users}\n' \
-               f'users to users served ratio: {round(self.bts.served_users/(self.bts.new_users), 4)*100}%\n' \
-               f'cycles done: {self.bts.cycles_done}\n' \
-               f'user appearance times: {self.bts.t1, self.bts.t2}\n' \
-               f'user resource blocks propagation properties update: {self.bts.tau}\n' \
-               f'mean user wait time: {round(mean(self.bts.avg_waittime), 3)}ms\n' \
-               f'transmission error rate: {round(self.bts.error_trasmission/(self.bts.error_trasmission + self.bts.correct_transmission), 4)*100}%'
+        return {'simulation start': f'{self.exec_start.strftime("%b %d %Y %H:%M:%S")}',
+                'simulation end': f'{stop.strftime("%b %d %Y %H:%M:%S")}',
+                'simulation time': f'{stop - self.exec_start}',
+                'simulated time of': f'{self.simulation_time}s',
+                'users': self.bts.new_users,
+                'users served': self.bts.served_users,
+                'users to users served ratio': f'{round(self.bts.served_users / self.bts.new_users, 4) * 100}%',
+                'cycles done': self.bts.cycles_done,
+                'user appearance times': f'{self.bts.t1, self.bts.t2}',
+                'user resource blocks propagation properties update': self.bts.tau,
+                'mean user wait time': f'{round(mean(self.bts.avg_waittime), 3)}ms',
+                'transmission error rate': f'{round(self.bts.error_trasmission / (self.bts.error_trasmission + self.bts.correct_transmission), 4) *100}%'}
