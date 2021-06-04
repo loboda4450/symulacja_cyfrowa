@@ -12,6 +12,8 @@ class User:
 		self.user_rb_list: List[ResourceBlock] = _rb  # lista przydzielonych bloków zasobów użytkownikowi
 		self.prev_sum_d: List[int] = list()  # lista przepływności z poprzednich 5 ms.
 		self.sum_d: List[ResourceBlock] = list()  # nie ma sensu z tego wyciągać średniej, jeżeli numa >= numb, to numa/5 >= numb/5
+		self.throughputs: List[List[int]] = list()
+		self.retransmitted: List[List[int]] = list()
 		self.waittime: int = 0
 
 		self.log.log(msg=f'Created user: {self.d, self.user_rb_list, self.sum_d}', level=2)

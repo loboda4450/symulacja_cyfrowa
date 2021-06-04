@@ -1,6 +1,5 @@
 import logging
 from numpy.random import random_sample, randint
-import random
 
 
 class ResourceBlock:
@@ -8,10 +7,9 @@ class ResourceBlock:
         self.throughput: int = randint(low=20, high=800)  # [bit/ms] przepływność użytkownika
         self.epsilon: float = _epsilon
         self.log: logging.Logger = _log.getChild(__name__)
-        self.is_sent: bool = random_sample() >= self.epsilon  # random_sample() >= self.epsilon
+        self.is_sent: bool = random_sample() >= self.epsilon
 
         self.log.log(msg=f'Created ResourceBlock with throughput of {self.throughput} kbit/s', level=3)
-
 
     def update_is_sent(self) -> None:
         self.log.log(msg=f"Updating ResourceBlock's is_sent to {self.is_sent}", level=3)

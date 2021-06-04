@@ -1,4 +1,5 @@
 import logging
+import statistics
 from math import copysign, inf
 
 import numpy.random as random
@@ -14,7 +15,7 @@ def divide(a, b):
         return a / b
 
 
-def generate_fucking_random_bigger_than_fucking_0_ffs(l: int) -> int:
+def generate_fucking_random_bigger_than_fucking_0_ffs(l: float) -> int:
     tmp = round(random.exponential(l))
     while tmp == 0:
         tmp = round(random.exponential(l))
@@ -23,7 +24,8 @@ def generate_fucking_random_bigger_than_fucking_0_ffs(l: int) -> int:
 
 
 class BTS:
-    def __init__(self, k_: int, s_: int, epsilon_: float, clock_: int, simulation_time_: int, _log: logging):
+    def __init__(self, k_: int, s_: int, epsilon_: float, clock_: int, simulation_time_: int, t1l: int, t2l: int,
+                 _log: logging):
         self.log: logging.Logger = _log.getChild(__name__)
         self.k: int = k_  # ilość Resource Blocks
         self.k_max: int = 3  # ilość ResourceBlocków do przydzielenie maksymalnie
@@ -31,8 +33,8 @@ class BTS:
         self.epsilon: float = epsilon_  # prawdopodobienstwo, że transmisja się nie uda
         self.tau: float = generate_fucking_random_bigger_than_fucking_0_ffs(
             10)  # odstęp czasowy między zmianą warunków propagacji dla każdego usera
-        self.t1: int = 5  # generate_fucking_random_bigger_than_fucking_0_ffs(40)  # czas co ile pojawiają się nowi userzy
-        self.t2: int = 32  # generate_fucking_random_bigger_than_fucking_0_ffs(40)  # czas co ile pojawiają się nowi userzy
+        self.t1: int = t1l  # generate_fucking_random_bigger_than_fucking_0_ffs(t1l)
+        self.t2: int = t2l  # generate_fucking_random_bigger_than_fucking_0_ffs(t2l)
         self.clock: int = clock_  # zegar BTSa (1 cykl = 1ms)
         self.cycles_done: int = 0  # wykonane cykle zegarowe przez BTS.
         self.taken_rb_count: int = 0  # ilość zajętych ResourceBlocków
@@ -41,10 +43,16 @@ class BTS:
         self.new_users: int = 0
         self.simulation_time: int = simulation_time_ * 1000
         self.avg_waittime: List[int] = list()
+        self.data_sent: List[int] = list()
+        self.data_retransmitted: List[int] = list()
+        self.user_mean_data_sent: List[int] = list()
+        self.user_mean_data_retransmitted: List[int] = list()
         self.correct_transmission = 0
         self.error_trasmission = 0
         self.initial_phase: bool = False
         self.initial_phase_cycles: int = None
+
+        print(self.t1, self.t2, simulation_time_)
 
         self.log.log(msg='Created Base Transmitting Station', level=1)
 
@@ -73,22 +81,35 @@ class BTS:
             self.redistribute_resource_blocks()
             self.log.log(msg='Updated users resource blocks', level=1)
 
+        # tmp = list()
+        # tmp2 = list()
         for user in self.user_list:
+            tmp = list()
+            tmp2 = list()
             if user.d > 0 and user.has_resource_blocks():
                 for rb in user.user_rb_list:
                     if rb.is_sent:
                         user.d -= rb.throughput
                         self.correct_transmission += 1
+                        tmp.append(rb.throughput)
                         self.log.log(msg='Sent packet!', level=1)
                     else:
                         rb.update_is_sent()
                         self.error_trasmission += 1
+                        tmp2.append(rb.throughput)
                         self.log.log(msg='Packet updated!', level=2)
 
+                user.throughputs.append(tmp if tmp else [0])
+                user.retransmitted.append(tmp2 if tmp2 else [0])
+                self.data_retransmitted.append(statistics.mean(tmp2 if tmp2 else [0]))
+                self.data_sent.append(statistics.mean(tmp if tmp else [0]))
                 user.update_prev_sum_d()
 
                 if user.d <= 0:
-                    if self.initial_phase: self.avg_waittime.append(user.waittime)
+                    if self.initial_phase:
+                        self.avg_waittime.append(user.waittime)
+                        self.user_mean_data_sent.append(statistics.mean(statistics.mean(t) for t in user.throughputs if t))
+                        self.user_mean_data_retransmitted.append(statistics.mean([statistics.mean(r) for r in user.retransmitted if r]))
                     self.remove_user(user)
 
             user.update_user_waittime()
