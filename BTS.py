@@ -123,7 +123,7 @@ class BTS:
         self.log.log(msg='Added user to BTS!', level=1)
 
     def remove_user(self, user: User) -> None:
-        self.taken_rb_count -= len(user.user_rb_list)
+        # self.taken_rb_count -= len(user.user_rb_list)
         self.user_list.remove(user)
         self.served_users += 1
 
@@ -145,6 +145,6 @@ class BTS:
 
             picked.add_resource_block(ResourceBlock(_log=self.log, _epsilon=self.epsilon))
 
-            if i == self.k - 1 and not self.initial_phase:
+            if (i == self.k - 1 or self.cycles_done > 100) and not self.initial_phase:
                 self.initial_phase = True
                 self.initial_phase_cycles = self.cycles_done

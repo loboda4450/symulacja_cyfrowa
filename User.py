@@ -18,14 +18,14 @@ class User:
 
 		self.log.log(msg=f'Created user: {self.d, self.user_rb_list, self.sum_d}', level=2)
 
-	def send_packet(self) -> None:
-		for rb in self.user_rb_list:
-			if rb.is_sent:
-				self.d -= rb.throughput
-				self.log.log(msg='Sent packet!', level=2)
-			else:
-				rb.update_is_sent()
-				self.log.log(msg='Packet updated!', level=2)
+	# def send_packet(self) -> None:
+	# 	for rb in self.user_rb_list:
+	# 		if rb.is_sent:
+	# 			self.d -= rb.throughput
+	# 			self.log.log(msg='Sent packet!', level=2)
+	# 		else:
+	# 			rb.update_is_sent()
+	# 			self.log.log(msg='Packet updated!', level=2)
 
 	def update_user_waittime(self):
 		self.waittime += 1
@@ -57,8 +57,8 @@ class User:
 		if len(self.prev_sum_d) > 5:
 			self.prev_sum_d.pop(0)
 
-	def update_sum_d(self) -> None:
-		self.sum_d = sum(rb.throughput for rb in self.user_rb_list if rb.is_sent)
+	# def update_sum_d(self) -> None:
+	# 	self.sum_d = sum(rb.throughput for rb in self.user_rb_list if rb.is_sent)
 
 	def get_avg_throughput(self) -> int:
 		return sum(self.prev_sum_d)
